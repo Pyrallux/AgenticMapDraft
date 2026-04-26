@@ -1,4 +1,5 @@
 # Project Specific Stuff
+/data/map_stats.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
