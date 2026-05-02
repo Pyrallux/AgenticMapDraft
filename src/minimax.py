@@ -1,4 +1,4 @@
-class Minimax_agent:
+class MinimaxAgent:
     def __init__(self,max_depth=7):
         self.max_depth = max_depth
 
