@@ -35,67 +35,59 @@ class MinimaxAgent:
         if action_index ==7:
             return self.eval(team_a_strengths, team_b_strengths, picked_maps), None
 
-        #find turn
-        team_a_turn = action_index in [0, 2, 4, 6]
+        if action_index in [0, 4]:  # A bans
+            maximizing = False
+        elif action_index in [1, 5]:  # B bans
+            maximizing = True
+        elif action_index in [2]:  # A picks
+            maximizing = True
+        elif action_index in [3]:  # B picks
+            maximizing = False
+        elif action_index in [6]:  # decider pick
+            maximizing = True
 
         best_map = next(iter(available_maps))
 
-        if team_a_turn:
+        if maximizing:
             best_value = float("-inf")
+        else:            
+            best_value = float("inf")
 
-            for map_name in available_maps:
-                next_available = available_maps.copy()
-                next_available.remove(map_name)
 
-                next_picked = picked_maps.copy()
+        
 
-                if action_index == 2:
-                    next_picked.append((map_name, "A"))
-                elif action_index == 3:
-                    next_picked.append((map_name, "B"))
-                elif action_index == 6:
-                    next_picked.append((map_name, "D"))
+        for map_name in available_maps:
+            next_available = available_maps.copy()
+            next_available.remove(map_name)
 
-                value, _ = self.minimax(
-                    team_a_strengths,
-                    team_b_strengths,
-                    next_available,
-                    action_index + 1,
-                    next_picked,
-                )
+            next_picked = picked_maps.copy()
 
+            if action_index == 2:
+                next_picked.append((map_name, "A"))
+            elif action_index == 3:
+                next_picked.append((map_name, "B"))
+            elif action_index == 6:
+                next_picked.append((map_name, "D"))
+
+            value, _ = self.minimax(
+                team_a_strengths,
+                team_b_strengths,
+                next_available,
+                action_index + 1,
+                next_picked,
+            )
+
+            if maximizing:
                 if value > best_value:
                     best_value = value
                     best_map = map_name
-            return best_value, best_map
-        else:
-            best_value = float("inf")
-
-            for map_name in available_maps:
-                next_available = available_maps.copy()
-                next_available.remove(map_name)
-
-                next_picked = picked_maps.copy()
-
-                if action_index == 2:
-                    next_picked.append((map_name, "A"))
-                elif action_index == 3:
-                    next_picked.append((map_name, "B"))
-                elif action_index == 6:
-                    next_picked.append((map_name, "D"))
-
-                value, _ = self.minimax(
-                    team_a_strengths,
-                    team_b_strengths,
-                    next_available,
-                    action_index + 1,
-                    next_picked,
-                )
-
+            else:
                 if value < best_value:
                     best_value = value
                     best_map = map_name
-            return best_value, best_map
+        return best_value, best_map
+        
+            
 
     def get_action(
         self, team_a_strengths, team_b_strengths, available_maps, action_index
