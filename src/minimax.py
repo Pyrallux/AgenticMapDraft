@@ -6,21 +6,26 @@ class MinimaxAgent:
         """
         Heuristic eval for map set
         """
-
+        score = 0
         a_wins = 0
         b_wins = 0
 
-        for i, (map_name, picker) in enumerate(picked_maps):
-            if i not in [2, 3, 6]:  # bans
-                continue
+        for i, (map_name, _) in enumerate(picked_maps):
+            
             a= team_a_strengths.get(map_name, 0)
             b = team_b_strengths.get(map_name, 0)
+
+            weight = 1
+            if i in [0,1,4,5]:  
+                weight = 3
+            
 
             if a > b:
                 a_wins += 1
             elif b > a:
                 b_wins += 1
-        return a_wins - b_wins
+        score += (a_wins - b_wins) * weight
+        return score
 
     def minimax(
         self,
