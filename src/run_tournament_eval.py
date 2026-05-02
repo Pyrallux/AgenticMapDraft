@@ -64,6 +64,11 @@ def simulate_match(team_a_agent, team_b_agent, team_a_stats, team_b_stats, map_p
             i,
         )
 
+        if chosen_action not in available_actions:
+            raise ValueError(
+                f"Invalid action chosen: {chosen_action} not in available maps {available_actions}"
+            )
+
         available_actions.remove(chosen_action)
 
         strength_a = team_a_stats.get(chosen_action, 0)
@@ -97,22 +102,20 @@ def simulate_match(team_a_agent, team_b_agent, team_a_stats, team_b_stats, map_p
 
 
 def run_tournament(team_stats, map_pool):
-    # TODO: Update to use Minimax agent too
     agent_classes = {
         "Reflex": ReflexAgent,
-        # "Minimax": MinimaxAgent,
+        "Minimax": MinimaxAgent,
         "CFR": CFRAgent,
     }
 
     agents = [
         {"name": "Reflex", "instance": ReflexAgent()},
-        # {"name": "Minimax", "instance": MinimaxAgent()},
+        {"name": "Minimax", "instance": MinimaxAgent()},
         {"name": "CFR", "instance": CFRAgent()},
     ]
 
     # Add a random duplicate from the existing types
     random_name = random.choice(list(agent_classes.keys()))
-    agents.append({"name": random_name, "instance": agent_classes[random_name]()})
     agents.append({"name": random_name, "instance": agent_classes[random_name]()})
 
     # Shuffle agents to randomize bracket
