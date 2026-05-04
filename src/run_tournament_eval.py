@@ -18,6 +18,7 @@ Evaluation:
 """
 
 import random
+import time
 import ast
 import argparse
 import pandas as pd
@@ -236,12 +237,20 @@ if __name__ == "__main__":
     NUM_TOURNAMENTS = args.num_tournaments
     SHOW_BRACKETS = args.show_brackets
 
+    # Random seed for reproducibility
+    random.seed(42)
+
     # Load Team Map Stats
     TEAM_STATS, ALL_MAPS = load_map_stats()
 
     tournament_results = []
+    start_time = time.time()
+    print("Starting tournament simulation...")
     # Run Specified Number of Tournamnets
-    for _ in range(NUM_TOURNAMENTS):
+    for i in range(NUM_TOURNAMENTS):
+        # every 10%, provide a progress update
+        if (i + 1) % max(1, NUM_TOURNAMENTS // 10) == 0:
+            print(f"- Successfully completed simulation of {i + 1} tournaments...")
         t_data = run_tournament(TEAM_STATS, set(ALL_MAPS))
         tournament_results.append(t_data)
 
@@ -427,7 +436,8 @@ if __name__ == "__main__":
         plt.show()
 
     # Evaluate results (matplotlib charts)
-    print(f"Tournament results over {NUM_TOURNAMENTS} simulations:")
+    print(f"Total runtime: {time.time() - start_time:.2f} seconds")
+    print(f"Printing tournament results over {NUM_TOURNAMENTS} simulations.")
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 6))
     fig.suptitle("Agent Performance in Map Draft Tournaments (Winrates %)", fontsize=16)

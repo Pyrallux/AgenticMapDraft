@@ -6,18 +6,18 @@ class MinimaxAgent:
 
     def map_value(self, a, b):
         return a - b
-    
+
     def eval(self, team_a_strengths, team_b_strengths, picked_maps):
         """
         Heuristic eval for map set
         Returns value from the perspective of the agent playing
         """
-        
+
         a_wins = 0
         b_wins = 0
 
         for i, (map_name, _) in enumerate(picked_maps):
-            
+
             a = team_a_strengths.get(map_name, 0)
             b = team_b_strengths.get(map_name, 0)
 
@@ -44,19 +44,19 @@ class MinimaxAgent:
         # terminal
         if action_index == 7:
             return self.eval(team_a_strengths, team_b_strengths, picked_maps), None
-        
+
         # Determine if current player is the agent or opponent
         # Action indices: 0=A_ban1, 1=B_ban1, 2=A_pick1, 3=B_pick1, 4=A_ban2, 5=B_ban2, 6=decider
-        
+
         if self.is_team_a:
             # Agent is Team A
-            if action_index in [0, 2, 4, 6]:  # A's turns (ban1, pick1, ban2, decider)
+            if action_index % 2 == 0:  # A's turns (ban1, pick1, ban2, decider)
                 maximizing = True
             else:  # B's turns
                 maximizing = False
         else:
             # Agent is Team B
-            if action_index in [1, 3, 5, 6]:  # B's turns (ban1, pick1, ban2, decider)
+            if action_index % 2 == 1:  # B's turns (ban1, pick1, ban2, decider)
                 maximizing = True
             else:  # A's turns
                 maximizing = False
@@ -65,7 +65,7 @@ class MinimaxAgent:
 
         if maximizing:
             best_value = float("-inf")
-        else:            
+        else:
             best_value = float("inf")
 
         for map_name in available_maps:
@@ -106,9 +106,9 @@ class MinimaxAgent:
         # In the tournament, action_index 0,2,4,6 are Team A's turns; 1,3,5 are Team B's turns
         # Since get_action is called for the agent, we can infer which team they are
         available_maps = set(available_maps)
-        
+
         # Store whether this agent is Team A
-        if action_index in [0, 2, 4, 6]:
+        if action_index % 2 == 0:
             self.is_team_a = True
         else:
             self.is_team_a = False
