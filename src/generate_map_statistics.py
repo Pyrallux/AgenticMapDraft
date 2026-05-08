@@ -20,7 +20,7 @@ def calculate_map_strength(playrate, winrate):
 
 def calculate_map_statistics(team_name, match_data, map_pool):
     # Calcualtes relevant statistics given data columns for a single team
-    # Relevant statistics: winrate, playrate, defense winrate, attack winrate, strength
+    # Relevant statistics: winrate, playrate, strength
     team_map_stats = {}
 
     # Iterate through each map in the given data
@@ -28,16 +28,10 @@ def calculate_map_statistics(team_name, match_data, map_pool):
         counts = {
             "times_won": 0,
             "times_played": 0,
-            "attack_rounds_won": 0,
-            "attack_rounds_played": 0,
-            "defense_rounds_won": 0,
-            "defense_rounds_played": 0,
         }
         stats = {
             "winrate": 0,
             "playrate": 0,
-            "defense_winrate": 0,
-            "attack_winrate": 0,
             "strength": 0,
         }
 
@@ -48,39 +42,15 @@ def calculate_map_statistics(team_name, match_data, map_pool):
                 counts["times_played"] += 1
                 if match["Team A Score"] > match["Team B Score"]:
                     counts["times_won"] += 1
-                counts["attack_rounds_won"] += match["Team A Attacker Score"]
-                counts["attack_rounds_played"] += (
-                    match["Team A Attacker Score"] + match["Team B Defender Score"]
-                )
-                counts["defense_rounds_won"] += match["Team A Defender Score"]
-                counts["defense_rounds_played"] += (
-                    match["Team A Defender Score"] + match["Team B Attacker Score"]
-                )
             elif match["Team B"] == team_name:
                 counts["times_played"] += 1
                 if match["Team B Score"] > match["Team A Score"]:
                     counts["times_won"] += 1
-                counts["attack_rounds_won"] += match["Team B Attacker Score"]
-                counts["attack_rounds_played"] += (
-                    match["Team B Attacker Score"] + match["Team A Defender Score"]
-                )
-                counts["defense_rounds_won"] += match["Team B Defender Score"]
-                counts["defense_rounds_played"] += (
-                    match["Team B Defender Score"] + match["Team A Attacker Score"]
-                )
 
         # Calculate statistics
         if counts["times_played"] > 0:
             stats["winrate"] = counts["times_won"] / counts["times_played"]
             stats["playrate"] = counts["times_played"] / len(match_data)
-        if counts["attack_rounds_played"] > 0:
-            stats["attack_winrate"] = (
-                counts["attack_rounds_won"] / counts["attack_rounds_played"]
-            )
-        if counts["defense_rounds_played"] > 0:
-            stats["defense_winrate"] = (
-                counts["defense_rounds_won"] / counts["defense_rounds_played"]
-            )
         stats["strength"] = calculate_map_strength(stats["playrate"], stats["winrate"])
 
         team_map_stats[map_] = stats
